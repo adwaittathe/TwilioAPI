@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const dotenv= require('dotenv');
 dotenv.config();
 const accountSID = process.env.TWILIO_ACCOUNT_SID;
+const port = process.env.PORT || 8080;
 const authToken = process.env.TWILIO_AUHT_TOKEN;
 const client = require('twilio')(accountSID,authToken);
 
@@ -29,4 +30,4 @@ mongoose.connect(
 app.use('/api/twilio',  twilioRoutes);
 
 app.use(express.json());
-app.listen(80, ()=> console.log('Server Up. Listening to port 80.........'));
+app.listen(port, ()=> console.log('Server Up. Listening to port 8080.........'));
