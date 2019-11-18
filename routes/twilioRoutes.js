@@ -8,7 +8,7 @@ const client = require('twilio')(accountSID,authToken);
 const http = require('http');
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
-router.post('/register' , (req,res) => {
+router.post('/register' , async (req,res) => {
 
     let from =  req.body.From;
     let to = req.body.To;
@@ -16,11 +16,29 @@ router.post('/register' , (req,res) => {
     console.log("FROM  " + from);
     console.log("To  " + to);
     console.log("msgBody  " + msgBody);
-    phoneModel.findOne({phoneNo : from } , (err, message)  =>{
-        console.log("MESSAGE");
-        console.log(message);
-        res.end();
-    })
+    if(msgBody == "START")
+    {
+        let phone = phoneModel.findOne({phoneNo : from });
+        if(!phone){
+            let phoneObj = new phoneModel({
+                phoneNo : from
+            })
+            let newPhone = await phoneObj.save();
+            console.log("NEW PHONE OBJ");
+            console.log(newPhone);
+            console.log("------");
+            console.log(JSON.stringify(newPhone));
+        }else{
+            console.log("OLD PHONE OBJ");
+            console.log(JSON.stringify(phone));
+        }
+    }
+
+    // phoneModel.findOne({phoneNo : from } , (err, message)  =>{
+    //     console.log("MESSAGE");
+    //     console.log(message);
+    //     res.end();
+    // })
 
     // const twiml = new MessagingResponse();
     // twiml.message('Lets register to twilio...');
