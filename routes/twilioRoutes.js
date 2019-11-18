@@ -23,15 +23,27 @@ router.post('/register' , async (req,res) => {
             let phoneObj = new phoneModel({
                 phoneNo : from
             })
-            let newPhone = await phoneObj.save();
+            phone = await phoneObj.save();
             console.log("NEW PHONE OBJ");
             console.log(newPhone);
             console.log("------");
             console.log(JSON.stringify(newPhone));
+            client.messages.create({
+              to : from,
+              from : process.env.TWILIO_PHONE_NO,
+              body : 'Welcome to the study',})
+              .then((message) => console.log(message.sid))
         }else{
             console.log("OLD PHONE OBJ");
             console.log(phone);
             console.log(JSON.stringify(phone));
+        }
+        if(!phone.symptom){
+            client.messages.create({
+                to : from,
+                from : process.env.TWILIO_PHONE_NO,
+                body : 'Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None',})
+                .then((message) => console.log(message.sid))
         }
     }
 
