@@ -18,7 +18,7 @@ router.post('/register' , async (req,res) => {
     console.log("msgBody  " + msgBody);
     if(msgBody == "START")
     {
-        let phone = phoneModel.findOne({phoneNo : from });
+        let phone = await phoneModel.findOne({phoneNo : from });
         if(!phone){
             let phoneObj = new phoneModel({
                 phoneNo : from
@@ -31,7 +31,7 @@ router.post('/register' , async (req,res) => {
         }else{
             console.log("OLD PHONE OBJ");
             console.log(phone);
-            //console.log(JSON.stringify(phone));
+            console.log(JSON.stringify(phone));
         }
     }
 
