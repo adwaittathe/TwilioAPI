@@ -2,14 +2,15 @@ const express=require('express');
 const app=express();
 const mongoose = require('mongoose');
 const dotenv= require('dotenv');
+const bodyParser = require('body-parser');
 dotenv.config();
 const accountSID = process.env.TWILIO_ACCOUNT_SID;
 const port = process.env.PORT || 8080;
 const authToken = process.env.TWILIO_AUHT_TOKEN;
 const client = require('twilio')(accountSID,authToken);
 
-
-mongoose.set('useFindAndModify', false);
+app.use(bodyParser.urlencoded({extended:false}));
+//mongoose.set('useFindAndModify', false);
 const twilioRoutes = require( './routes/twilioRoutes');
 
 mongoose.connect(

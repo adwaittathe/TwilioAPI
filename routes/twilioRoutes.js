@@ -2,6 +2,7 @@ const router = require('express').Router();
 const accountSID = process.env.TWILIO_ACCOUNT_SID;
 const phoneModel = require('../model/phone');
 const authToken = process.env.TWILIO_AUHT_TOKEN;
+const bodyParser = require('body-parser');
 
 const client = require('twilio')(accountSID,authToken);
 const http = require('http');
