@@ -17,13 +17,19 @@ router.post('/register' , async (req,res) => {
     if(phone)
     {
         res.send({
-            "result" : "yes"
+            "result" : "yes",
+            "phone" : phone
         })
     }
     else
     {
+        let phoneObj = new phoneModel({
+            phoneNo : from
+        })
+        phone = await phoneObj.save();
         res.send({
-            "result" : "No"
+            "result" : "No",
+            "phone" : phone
         })
     }
 
