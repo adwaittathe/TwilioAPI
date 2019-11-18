@@ -2,10 +2,7 @@ const router = require('express').Router();
 const accountSID = process.env.TWILIO_ACCOUNT_SID;
 const phoneModel = require('../model/phone');
 const authToken = process.env.TWILIO_AUHT_TOKEN;
-const bodyParser = require('body-parser');
-
 const client = require('twilio')(accountSID,authToken);
-const http = require('http');
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 router.post('/register' , async (req,res) => {
@@ -13,9 +10,6 @@ router.post('/register' , async (req,res) => {
     let from =  req.body.From;
     let to = req.body.To;
     let msgBody = req.body.Body; 
-    console.log("FROM  " + from);
-    console.log("To  " + to);
-    console.log("msgBody  " + msgBody);
     let phone = await phoneModel.findOne({phoneNo : from });
     if(msgBody == "START")
     {     
@@ -36,6 +30,7 @@ router.post('/register' , async (req,res) => {
                 body : 'Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None'})
         }
     }
+    else{
     if(phone)
     {
         if(!phone.symptom){
@@ -69,7 +64,6 @@ router.post('/register' , async (req,res) => {
                 default:
                     sympObj = "wrongInput";            
             }
-            console.log("SYSOBJ " + sympObj);
             if(sympObj == "wrongInput")
             {
                 await client.messages.create({
@@ -101,12 +95,10 @@ router.post('/register' , async (req,res) => {
     
         }
 
+    } 
+
     }
-        
+         
 });
-
-
-
-
 
 module.exports = router;
