@@ -25,9 +25,9 @@ router.post('/register' , async (req,res) => {
             })
             phone = await phoneObj.save();
             console.log("NEW PHONE OBJ");
-            console.log(newPhone);
+            console.log(phone);
             console.log("------");
-            console.log(JSON.stringify(newPhone));
+            console.log(JSON.stringify(phone));
             client.messages.create({
               to : from,
               from : process.env.TWILIO_PHONE_NO,
