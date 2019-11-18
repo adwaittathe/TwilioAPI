@@ -30,7 +30,8 @@ router.post('/register' , async (req,res) => {
             console.log(JSON.stringify(newPhone));
         }else{
             console.log("OLD PHONE OBJ");
-            console.log(JSON.stringify(phone));
+            console.log(phone);
+            //console.log(JSON.stringify(phone));
         }
     }
 
