@@ -13,6 +13,9 @@ router.post('/register' , (req,res) => {
     let from =  req.body.From;
     let to = req.body.To;
     let msgBody = req.body.Body; 
+    console.log("FROM  " + from);
+    console.log("To  " + to);
+    console.log("msgBody  " + msgBody);
     phoneModel.findOne({phoneNo : from } , (err, message)  =>{
         console.log("MESSAGE");
         console.log(message);
