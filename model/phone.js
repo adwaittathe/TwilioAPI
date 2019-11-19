@@ -7,6 +7,9 @@ const phoneSchema = new mongoose.Schema({
     symptom: {
         type:Object,
         //required: true
+    },
+    status:{
+        type: String,
     }
    
 });

@@ -5,6 +5,8 @@ const authToken = process.env.TWILIO_AUHT_TOKEN;
 const client = require('twilio')(accountSID,authToken);
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
+
+
 router.post('/register' , async (req,res) => {
 
     let from =  req.body.From;
@@ -13,45 +15,48 @@ router.post('/register' , async (req,res) => {
     console.log("FROM " + from);
     console.log("TO " + to);
     console.log("BODY " + msgBody);
-    let phone = await phoneModel.findOne({phoneNo : from });
-    if(phone)
-    {
-        res.send({
-            "result" : "yes",
-            "phone" : phone
-        })
+    let phone = await phoneModel.findOne({phoneNo : from });  
+    if(!phone && msgBody=="START"){
+            let phoneObj = new phoneModel({
+                phoneNo : from,
+                status : "Registered"
+            })
+            phone = await phoneObj.save();
+            await client.messages.create({
+              to : from,
+              from : process.env.TWILIO_PHONE_NO,
+              statusCallback: 'https://twilioapinodejs.herokuapp.com/api/twilio/symptom',
+              body : 'Welcome to the study',})
     }
-    else
+    if(phone && msgBody=="START"){
+        await phoneModel.findOneAndUpdate({phoneNo : from},
+            {
+                $set:{
+                    status : "Registered"
+                }
+        });
+    } 
+    switch(phone.status)
     {
-        let phoneObj = new phoneModel({
-            phoneNo : from
-        })
-        phone = await phoneObj.save();
-        res.send({
-            "result" : "No",
-            "phone" : phone
-        })
+            case "Registered":
+                    await client.messages.create({
+                        to : from,
+                        from : process.env.TWILIO_PHONE_NO,
+                        body : 'Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None'})
+                    await phoneModel.findOneAndUpdate({phoneNo : from},
+                        {
+                            $set:{
+                                status : "AwaitingSymptom"
+                            }
+                        });
+                    break;
+            
+            case "AwaitingSymptom":
+                
     }
+    
 
-    // if(msgBody == "START")
-    // {     
-    //     if(!phone){
-    //         let phoneObj = new phoneModel({
-    //             phoneNo : from
-    //         })
-    //         phone = await phoneObj.save();
-    //         await client.messages.create({
-    //           to : from,
-    //           from : process.env.TWILIO_PHONE_NO,
-    //           body : 'Welcome to the study',})
-    //     }
-    //     if(!phone.symptom){
-    //         await client.messages.create({
-    //             to : from,
-    //             from : process.env.TWILIO_PHONE_NO,
-    //             body : 'Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None'})
-    //     }
-    // }
+
     // else{
     // if(phone)
     // {
@@ -121,6 +126,19 @@ router.post('/register' , async (req,res) => {
 
     // }
          
+});
+
+
+router.post('/symptom' , async (req,res) => {
+
+    console.log("POST_______SYMP");
+
+});
+
+
+router.get('/symptom' , async (req,res) => {
+
+    console.log("GET_______SYMP");
 });
 
 module.exports = router;
