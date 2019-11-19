@@ -51,7 +51,7 @@ router.post('/register' , async (req,res) => {
             case "Registered":
                     let symptomList = phone.symptoms;
                     let symptString = "Please indicate your symptom ";
-                    for(let i=0;i<symptomList.size();i++)
+                    for(let i=0;i<symptomList.length;i++)
                     {
                         symptString+= "("+i+1+")"+ symptomList[i] + ", "
                     }
