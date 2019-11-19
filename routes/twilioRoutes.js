@@ -29,32 +29,32 @@ router.post('/register' , async (req,res) => {
               statusCallback: 'https://twilioapinodejs.herokuapp.com/api/twilio/symptom',
               body : 'Welcome to the study',})
     }
-    // if(phone && msgBody=="START"){
-    //     await phoneModel.findOneAndUpdate({phoneNo : from},
-    //         {
-    //             $set:{
-    //                 status : "Registered"
-    //             }
-    //     });
-    // } 
-    // switch(phone.status)
-    // {
-    //         case "Registered":
-    //                 await client.messages.create({
-    //                     to : from,
-    //                     from : process.env.TWILIO_PHONE_NO,
-    //                     body : 'Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None'})
-    //                 await phoneModel.findOneAndUpdate({phoneNo : from},
-    //                     {
-    //                         $set:{
-    //                             status : "AwaitingSymptom"
-    //                         }
-    //                     });
-    //                 break;
+    if(phone && msgBody=="START"){
+        await phoneModel.findOneAndUpdate({phoneNo : from},
+            {
+                $set:{
+                    status : "Registered"
+                }
+        });
+    } 
+    switch(phone.status)
+    {
+            case "Registered":
+                    await client.messages.create({
+                        to : from,
+                        from : process.env.TWILIO_PHONE_NO,
+                        body : 'Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None'})
+                    await phoneModel.findOneAndUpdate({phoneNo : from},
+                        {
+                            $set:{
+                                status : "AwaitingSymptom"
+                            }
+                        });
+                    break;
             
-    //         case "AwaitingSymptom":
+            case "AwaitingSymptom":
                 
-    // }
+    }
     
 
 
