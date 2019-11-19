@@ -18,9 +18,12 @@ router.post('/register' , async (req,res) => {
     // console.log("BODY " + msgBody);
     let phone = await phoneModel.findOne({phoneNo : from });  
     if(!phone && msgBody=="START"){
+            let symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness']; 
             let phoneObj = new phoneModel({
                 phoneNo : from,
-                status : "Registered"
+                status : "Registered",
+                symptoms : symptomList
+                
             })
             console.log("1");
             await client.messages.create({
@@ -33,10 +36,12 @@ router.post('/register' , async (req,res) => {
             console.log("3");
     }
     if(phone && msgBody=="START"){
+        let symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness']; 
         await phoneModel.findOneAndUpdate({phoneNo : from},
             {
                 $set:{
-                    status : "Registered"
+                    status : "Registered",
+                    symptoms : symptomList
             }
         });
         console.log("4");
@@ -44,10 +49,17 @@ router.post('/register' , async (req,res) => {
     switch(phone.status)
     {
             case "Registered":
+                    let symptomList = phone.symptomList;
+                    let symptString = "Please indicate your symptom ";
+                    for(let i=0;i<symptomList.size();i++)
+                    {
+                        symptString+= "("+i+1+")"+ symptomList[i] + ", "
+                    }
+                    symptString+= "(0) None";
                     await client.messages.create({
                         to : from,
                         from : process.env.TWILIO_PHONE_NO,
-                        body : 'Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None'})
+                        body : symptString})
                     console.log("5");
                     await phoneModel.findOneAndUpdate({phoneNo : from},
                         {
@@ -69,7 +81,7 @@ router.post('/register' , async (req,res) => {
                             $set:{
                                     status : "AwaitingScale"
                             }
-                    });
+                        });
                     break;
                        
     }

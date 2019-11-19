@@ -4,7 +4,7 @@ const phoneSchema = new mongoose.Schema({
     phoneNo : {
         type : String
     },
-    symptom: {
+    symptoms: {
         type:Object,
         //required: true
     },
