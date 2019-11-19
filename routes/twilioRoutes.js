@@ -22,35 +22,43 @@ router.post('/register' , async (req,res) => {
                 phoneNo : from,
                 status : "Registered"
             })
-            phone = await phoneObj.save();
+            console.log("1");
             await client.messages.create({
-              to : from,
-              from : process.env.TWILIO_PHONE_NO,
-              statusCallback: 'https://twilioapinodejs.herokuapp.com/api/twilio/symptom',
-              body : 'Welcome to the study',})
+                to : from,
+                from : process.env.TWILIO_PHONE_NO,
+                //statusCallback: 'https://twilioapinodejs.herokuapp.com/api/twilio/symptom',
+                body : 'Welcome to the study',})
+            console.log("2");
+            phone = await phoneObj.save(); 
+            console.log("3");
     }
     if(phone && msgBody=="START"){
         await phoneModel.findOneAndUpdate({phoneNo : from},
             {
                 $set:{
                     status : "Registered"
-                }
+            }
         });
+        console.log("4");
     } 
     switch(phone.status)
     {
             case "Registered":
+
                     await client.messages.create({
                         to : from,
                         from : process.env.TWILIO_PHONE_NO,
                         body : 'Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None'})
+                    console.log("5");
                     await phoneModel.findOneAndUpdate({phoneNo : from},
                         {
                             $set:{
                                 status : "AwaitingSymptom"
                             }
                         });
+                    console.log("6");
                     break;
+                    
             
             case "AwaitingSymptom":
                 

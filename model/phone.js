@@ -13,4 +13,4 @@ const phoneSchema = new mongoose.Schema({
     }
    
 });
-module.exports = mongoose.model('TwilioNumber', phoneSchema);
+module.exports = mongoose.model('twilio', phoneSchema);
