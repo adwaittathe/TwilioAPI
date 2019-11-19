@@ -49,7 +49,7 @@ router.post('/register' , async (req,res) => {
     switch(phone.status)
     {
             case "Registered":
-                    let symptomList = phone.symptomList;
+                    let symptomList = phone.symptoms;
                     let symptString = "Please indicate your symptom ";
                     for(let i=0;i<symptomList.size();i++)
                     {
