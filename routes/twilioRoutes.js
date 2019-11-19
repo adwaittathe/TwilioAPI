@@ -6,12 +6,12 @@ const client = require('twilio')(accountSID,authToken);
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 
-
+let symptomList = ['Headache',]
 router.post('/register' , async (req,res) => {
 
     console.log("IN RESGISTER");
     let from =  req.body.From;
-    let to = req.body.To;
+    //let to = req.body.To;
     let msgBody = req.body.Body; 
     // console.log("FROM " + from);
     // console.log("TO " + to);
@@ -44,7 +44,6 @@ router.post('/register' , async (req,res) => {
     switch(phone.status)
     {
             case "Registered":
-
                     await client.messages.create({
                         to : from,
                         from : process.env.TWILIO_PHONE_NO,
@@ -61,7 +60,18 @@ router.post('/register' , async (req,res) => {
                     
             
             case "AwaitingSymptom":
-                
+                    await client.messages.create({
+                        to : from,
+                        from : process.env.TWILIO_PHONE_NO,
+                        body : "On a scale from 0 (none) to 4 (severe), how would you rate your " + msgBody + " in the last 24 hours?"});
+                    await phoneModel.findOneAndUpdate({phoneNo : from},
+                        {
+                            $set:{
+                                    status : "AwaitingScale"
+                            }
+                    });
+                    break;
+                       
     }
     
 
@@ -138,16 +148,6 @@ router.post('/register' , async (req,res) => {
 });
 
 
-router.post('/symptom' , async (req,res) => {
 
-    console.log("POST_______SYMP");
-
-});
-
-
-router.get('/symptom' , async (req,res) => {
-
-    console.log("GET_______SYMP");
-});
 
 module.exports = router;
