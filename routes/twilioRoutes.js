@@ -46,29 +46,9 @@ router.post('/register' , async (req,res) => {
     switch(phone.status)
     {
             case "Registered":
-                    symptomMail();
-                    // symptomList = phone.symptoms;
-                    // let symptString = "Please indicate your symptom ";
-                    // for(let i=0;i<symptomList.length;i++)
-                    // {
-                    //     symptString+= "("+(i+1)+")"+ symptomList[i] + ", "
-                    // }
-                    // symptString+= "(0) None";
-                    // await client.messages.create({
-                    //     to : from,
-                    //     from : process.env.TWILIO_PHONE_NO,
-                    //     body : symptString})
-                    // console.log("5");
-                    // await phoneModel.findOneAndUpdate({phoneNo : from},
-                    //     {
-                    //         $set:{
-                    //             status : "AwaitingSymptom"
-                    //         }
-                    //     });
-                    // console.log("6");
-                    break;
-                    
-            
+                symptomMail();
+                break;
+
             case "AwaitingSymptom":
                 symptomList = phone.symptoms;
                 let symp = symptomList[msgBody-1];
@@ -117,10 +97,7 @@ router.post('/register' , async (req,res) => {
                         body : "You have a severe " + phone.currentSymptom});
                     symptomMail()
                 }
-                
-            
-
-            
+                break;       
     }
 
     async function symptomMail(){
@@ -142,77 +119,6 @@ router.post('/register' , async (req,res) => {
                 }
             });
     }
-    
-
-
-    // else{
-    // if(phone)
-    // {
-    //     if(!phone.symptom){
-    //         let symptomList = [];
-    //         let sympObj   
-    //         switch(msgBody){
-    //             case "1":
-    //                 sympObj = "Headache";
-    //                 break;
-                
-    //             case "2":
-    //                 sympObj = "Dizziness";
-    //                 break;
-            
-    //             case "3":
-    //                 sympObj = "Nausea";
-    //                 break;
-    
-    //             case "4":
-    //                 sympObj = "Fatigue";
-    //                 break;
-                    
-    //             case "5":
-    //                 sympObj = "Sadness";
-    //                 break;
-    
-    //             case "0":
-    //                 sympObj = "None";
-    //                 break;
-    
-    //             default:
-    //                 sympObj = "wrongInput";            
-    //         }
-    //         if(sympObj == "wrongInput")
-    //         {
-    //             await client.messages.create({
-    //                 to : from,
-    //                 from : process.env.TWILIO_PHONE_NO,
-    //                 body : 'Please enter a number from 0 to 5'})
-    //         }
-    //         else if(sympObj == "None")
-    //         {
-    //             await client.messages.create({
-    //                 to : from,
-    //                 from : process.env.TWILIO_PHONE_NO,
-    //                 body : 'Thank you and we will check with you later.'})
-    //         }
-    //         else{
-    //             symptomList.push(sympObj);
-    //             console.log("msgBody  " + msgBody);
-    //             await phoneModel.findOneAndUpdate({phoneNo : from},
-    //             {
-    //                 $set:{
-    //                     symptom : symptomList
-    //                 }
-    //             });
-    //             await client.messages.create({
-    //                 to : from,
-    //                 from : process.env.TWILIO_PHONE_NO,
-    //                 body : "On a scale from 0 (none) to 4 (severe), how would you rate your "+ sympObj +" in the last 24 hours?"})
-    //         }
-    
-    //     }
-
-    // } 
-
-    // }
          
 });
 
