@@ -125,7 +125,7 @@ router.post('/register' , async (req,res) => {
             
     }
 
-    function symptomMail(){
+    async function symptomMail(){
         symptomList = phone.symptoms;
         let symptString = "Please indicate your symptom ";
         for(let i=0;i<symptomList.length;i++)
