@@ -77,7 +77,6 @@ router.post('/register' , async (req,res) => {
                         from : process.env.TWILIO_PHONE_NO,
                         body : "On a scale from 0 (none) to 4 (severe), how would you rate your " + symp + " in the last 24 hours?"});
                 var newArray = symptomList.filter(e => e !== symp);
-    
                 await phoneModel.findOneAndUpdate({phoneNo : from},
                         {
                             $set:{
@@ -94,32 +93,31 @@ router.post('/register' , async (req,res) => {
                         to : from,
                         from : process.env.TWILIO_PHONE_NO,
                         body : "You do not have a " + phone.currentSymptom});
+                    symptomMail()
+                    
                 }
                 if(msgBody >=1 && msgBody <=2){
                     await client.messages.create({
                         to : from,
                         from : process.env.TWILIO_PHONE_NO,
                         body : "You have a mild " + phone.currentSymptom});
+                    symptomMail()
                 }
                 if(msgBody == 3){
                     await client.messages.create({
                         to : from,
                         from : process.env.TWILIO_PHONE_NO,
                         body : "You have a moderate " + phone.currentSymptom});
+                    symptomMail()
                 }
                 if(msgBody == 4){
                     await client.messages.create({
                         to : from,
                         from : process.env.TWILIO_PHONE_NO,
                         body : "You have a severe " + phone.currentSymptom});
+                    symptomMail()
                 }
-                await phoneModel.findOneAndUpdate({phoneNo : from},
-                {
-                    $set:{
-                        status : "AwaitingSymptom",
-                        currentSymptom : null
-                    }
-                });
+                
             
 
             
@@ -137,14 +135,12 @@ router.post('/register' , async (req,res) => {
             to : from,
             from : process.env.TWILIO_PHONE_NO,
             body : symptString})
-        console.log("5");
         await phoneModel.findOneAndUpdate({phoneNo : from},
             {
                 $set:{
                     status : "AwaitingSymptom"
                 }
             });
-        console.log("6");
     }
     
 
