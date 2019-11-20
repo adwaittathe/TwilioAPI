@@ -19,12 +19,6 @@ mongoose.connect(
     } 
 );
 
-// client.messages.create({
-//     body : 'Hello from Twilio',
-//     from : process.env.TWILIO_PHONE_NO,
-//     to : process.env.MY_PHONE_NO
-// })
-// .then((message) => console.log(message.sid))
 
 
 

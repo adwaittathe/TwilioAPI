@@ -29,7 +29,6 @@ router.post('/register' , async (req,res) => {
             await client.messages.create({
                 to : from,
                 from : process.env.TWILIO_PHONE_NO,
-                //statusCallback: 'https://twilioapinodejs.herokuapp.com/api/twilio/symptom',
                 body : 'Welcome to the study',})
             console.log("2");
             phone = await phoneObj.save(); 
@@ -53,7 +52,7 @@ router.post('/register' , async (req,res) => {
                     let symptString = "Please indicate your symptom ";
                     for(let i=0;i<symptomList.length;i++)
                     {
-                        symptString+= "("+i+1+")"+ symptomList[i] + ", "
+                        symptString+= "("+(i+1)+")"+ symptomList[i] + ", "
                     }
                     symptString+= "(0) None";
                     await client.messages.create({
@@ -72,17 +71,21 @@ router.post('/register' , async (req,res) => {
                     
             
             case "AwaitingSymptom":
-                    await client.messages.create({
+                let symptomList = phone.symptoms;
+                let symp = symptomList[msgBody-1];
+                await client.messages.create({
                         to : from,
                         from : process.env.TWILIO_PHONE_NO,
-                        body : "On a scale from 0 (none) to 4 (severe), how would you rate your " + msgBody + " in the last 24 hours?"});
-                    await phoneModel.findOneAndUpdate({phoneNo : from},
+                        body : "On a scale from 0 (none) to 4 (severe), how would you rate your " + symp + " in the last 24 hours?"});
+                await phoneModel.findOneAndUpdate({phoneNo : from},
                         {
                             $set:{
-                                    status : "AwaitingScale"
+                                    status : "AwaitingScale",
+                                    currentSymptom : symp,
+                                    symptoms : symp
                             }
                         });
-                    break;
+                break;
                        
     }
     
