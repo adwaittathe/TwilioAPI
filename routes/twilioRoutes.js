@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
             });
         sendSymptomListMessage();
     }
-    if (!phone && msgBody == "START") {
+    else if (!phone && msgBody == "START") {
         symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness'];
         let phoneObj = new phoneModel({
             phoneNo: from,
@@ -35,23 +35,25 @@ router.post('/register', async (req, res) => {
         phone = await phoneObj.save();
         sendSymptomListMessage();
     }
-    if (phone) {
-        switch (phone.status) {
-            // case "Registered":
-            //     sendSymptomListMessage();
-            //     break;
-
-            case "NowSymptomInBody":
-                sendScaleMessage()
-                break;
-
-            case "NowScaleInBody":
-                sendScaleSeverityMessage()
-                break;
+    else
+    {
+        if (phone) {
+            switch (phone.status) {
+                // case "Registered":
+                //     sendSymptomListMessage();
+                //     break;
+    
+                case "NowSymptomInBody":
+                    sendScaleMessage()
+                    break;
+    
+                case "NowScaleInBody":
+                    sendScaleSeverityMessage()
+                    break;
+            }
         }
+
     }
-
-
     async function sendSymptomListMessage() {
         symptomList = phone.symptoms;
         if (symptomList.length <= 2) {
