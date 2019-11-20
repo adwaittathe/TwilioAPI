@@ -9,7 +9,8 @@ router.post('/register', async (req, res) => {
     let msgBody = req.body.Body;
     let phone = await phoneModel.findOne({ phoneNo: from });
     
-    if (phone && msgBody == "START") {
+    if (phone && msgBody == "START" && !phone.status) {
+        
         symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness'];
         await phoneModel.findOneAndUpdate({ phoneNo: from },
             {
@@ -19,6 +20,7 @@ router.post('/register', async (req, res) => {
                 }
             });
         sendSymptomListMessage();
+        
     }
     else if (!phone && msgBody == "START") {
         symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness'];
