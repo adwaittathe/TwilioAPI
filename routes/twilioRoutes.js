@@ -62,7 +62,7 @@ router.post('/register', async (req, res) => {
             await phoneModel.findOneAndUpdate({ phoneNo: from },
                 {
                     $set: {
-                        status: "Registered"
+                        status: null
                     }
             });
             return;
@@ -142,7 +142,7 @@ router.post('/register', async (req, res) => {
             await phoneModel.findOneAndUpdate({ phoneNo: from },
                 {
                     $set: {
-                        status: "Registered"
+                        status: null
                     }
                 });
         }
