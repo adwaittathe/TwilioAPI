@@ -75,16 +75,50 @@ router.post('/register' , async (req,res) => {
                         to : from,
                         from : process.env.TWILIO_PHONE_NO,
                         body : "On a scale from 0 (none) to 4 (severe), how would you rate your " + symp + " in the last 24 hours?"});
+                var newArray = symptomList.filter(e => e !== symp);
+    
                 await phoneModel.findOneAndUpdate({phoneNo : from},
                         {
                             $set:{
                                     status : "AwaitingScale",
                                     currentSymptom : symp,
-                                    symptoms : symp
+                                    symptoms : newArray
                             }
                         });
                 break;
-                       
+
+            case "AwaitingScale":
+                if(msgBody ==0){
+                    await client.messages.create({
+                        to : from,
+                        from : process.env.TWILIO_PHONE_NO,
+                        body : "You do not have a " + phone.currentSymptom});
+                }
+                if(msgBody >=1 && msgBody <=2){
+                    await client.messages.create({
+                        to : from,
+                        from : process.env.TWILIO_PHONE_NO,
+                        body : "You have a mild " + phone.currentSymptom});
+                }
+                if(msgBody == 3){
+                    await client.messages.create({
+                        to : from,
+                        from : process.env.TWILIO_PHONE_NO,
+                        body : "You have a moderate " + phone.currentSymptom});
+                }
+                if(msgBody == 4){
+                    await client.messages.create({
+                        to : from,
+                        from : process.env.TWILIO_PHONE_NO,
+                        body : "You have a severe " + phone.currentSymptom});
+                }
+                await phoneModel.findOneAndUpdate({phoneNo : from},
+                {
+                    $set:{
+                        status : "AwaitingSymptom",
+                        currentSymptom : null
+                    }
+                });
     }
     
 
