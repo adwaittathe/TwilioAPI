@@ -46,25 +46,26 @@ router.post('/register' , async (req,res) => {
     switch(phone.status)
     {
             case "Registered":
-                symptomList = phone.symptoms;
-                    let symptString = "Please indicate your symptom ";
-                    for(let i=0;i<symptomList.length;i++)
-                    {
-                        symptString+= "("+(i+1)+")"+ symptomList[i] + ", "
-                    }
-                    symptString+= "(0) None";
-                    await client.messages.create({
-                        to : from,
-                        from : process.env.TWILIO_PHONE_NO,
-                        body : symptString})
-                    console.log("5");
-                    await phoneModel.findOneAndUpdate({phoneNo : from},
-                        {
-                            $set:{
-                                status : "AwaitingSymptom"
-                            }
-                        });
-                    console.log("6");
+                    symptomMail();
+                    // symptomList = phone.symptoms;
+                    // let symptString = "Please indicate your symptom ";
+                    // for(let i=0;i<symptomList.length;i++)
+                    // {
+                    //     symptString+= "("+(i+1)+")"+ symptomList[i] + ", "
+                    // }
+                    // symptString+= "(0) None";
+                    // await client.messages.create({
+                    //     to : from,
+                    //     from : process.env.TWILIO_PHONE_NO,
+                    //     body : symptString})
+                    // console.log("5");
+                    // await phoneModel.findOneAndUpdate({phoneNo : from},
+                    //     {
+                    //         $set:{
+                    //             status : "AwaitingSymptom"
+                    //         }
+                    //     });
+                    // console.log("6");
                     break;
                     
             
@@ -119,6 +120,31 @@ router.post('/register' , async (req,res) => {
                         currentSymptom : null
                     }
                 });
+            
+
+            
+    }
+
+    function symptomMail(){
+        symptomList = phone.symptoms;
+        let symptString = "Please indicate your symptom ";
+        for(let i=0;i<symptomList.length;i++)
+        {
+            symptString+= "("+(i+1)+")"+ symptomList[i] + ", "
+        }
+        symptString+= "(0) None";
+        await client.messages.create({
+            to : from,
+            from : process.env.TWILIO_PHONE_NO,
+            body : symptString})
+        console.log("5");
+        await phoneModel.findOneAndUpdate({phoneNo : from},
+            {
+                $set:{
+                    status : "AwaitingSymptom"
+                }
+            });
+        console.log("6");
     }
     
 
@@ -193,6 +219,8 @@ router.post('/register' , async (req,res) => {
     // }
          
 });
+
+
 
 
 
