@@ -21,6 +21,7 @@ router.post('/register', async (req, res) => {
             body: 'Welcome to the study',
         })
         phone = await phoneObj.save();
+        sendSymptomListMessage();
     }
     if (phone && msgBody == "START") {
         symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness'];
@@ -31,11 +32,12 @@ router.post('/register', async (req, res) => {
                     symptoms: symptomList
                 }
             });
+        sendSymptomListMessage();
     }
     switch (phone.status) {
-        case "Registered":
-            sendSymptomListMessage();
-            break;
+        // case "Registered":
+        //     sendSymptomListMessage();
+        //     break;
 
         case "NowSymptomInBody":
             sendScaleMessage()
@@ -62,8 +64,6 @@ router.post('/register', async (req, res) => {
                 });
             res.end();
             return;
-            
-
         }
         let symptString = "Please indicate your symptom ";
         for (let i = 0; i < symptomList.length; i++) {
