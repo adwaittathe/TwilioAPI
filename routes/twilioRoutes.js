@@ -8,6 +8,18 @@ router.post('/register', async (req, res) => {
     let from = req.body.From;
     let msgBody = req.body.Body;
     let phone = await phoneModel.findOne({ phoneNo: from });
+    
+    if (phone && msgBody == "START") {
+        symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness'];
+        await phoneModel.findOneAndUpdate({ phoneNo: from },
+            {
+                $set: {
+                    status: "Registered",
+                    symptoms: symptomList
+                }
+            });
+        sendSymptomListMessage();
+    }
     if (!phone && msgBody == "START") {
         symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness'];
         let phoneObj = new phoneModel({
@@ -21,17 +33,6 @@ router.post('/register', async (req, res) => {
             body: 'Welcome to the study',
         })
         phone = await phoneObj.save();
-        sendSymptomListMessage();
-    }
-    if (phone && msgBody == "START") {
-        symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness'];
-        await phoneModel.findOneAndUpdate({ phoneNo: from },
-            {
-                $set: {
-                    status: "Registered",
-                    symptoms: symptomList
-                }
-            });
         sendSymptomListMessage();
     }
     if (phone) {
