@@ -46,61 +46,19 @@ router.post('/register' , async (req,res) => {
     switch(phone.status)
     {
             case "Registered":
-                symptomMail();
+                sendSymptomListMessage();
                 break;
 
-            case "AwaitingSymptom":
-                symptomList = phone.symptoms;
-                let symp = symptomList[msgBody-1];
-                await client.messages.create({
-                        to : from,
-                        from : process.env.TWILIO_PHONE_NO,
-                        body : "On a scale from 0 (none) to 4 (severe), how would you rate your " + symp + " in the last 24 hours?"});
-                var newArray = symptomList.filter(e => e !== symp);
-                await phoneModel.findOneAndUpdate({phoneNo : from},
-                        {
-                            $set:{
-                                    status : "AwaitingScale",
-                                    currentSymptom : symp,
-                                    symptoms : newArray
-                            }
-                        });
+            case "NowSymptomInBody":
+                sendScaleMessage()
                 break;
 
-            case "AwaitingScale":
-                if(msgBody ==0){
-                    await client.messages.create({
-                        to : from,
-                        from : process.env.TWILIO_PHONE_NO,
-                        body : "You do not have a " + phone.currentSymptom});
-                    symptomMail()
-                    
-                }
-                if(msgBody >=1 && msgBody <=2){
-                    await client.messages.create({
-                        to : from,
-                        from : process.env.TWILIO_PHONE_NO,
-                        body : "You have a mild " + phone.currentSymptom});
-                    symptomMail()
-                }
-                if(msgBody == 3){
-                    await client.messages.create({
-                        to : from,
-                        from : process.env.TWILIO_PHONE_NO,
-                        body : "You have a moderate " + phone.currentSymptom});
-                    symptomMail()
-                }
-                if(msgBody == 4){
-                    await client.messages.create({
-                        to : from,
-                        from : process.env.TWILIO_PHONE_NO,
-                        body : "You have a severe " + phone.currentSymptom});
-                    symptomMail()
-                }
+            case "NowScaleInBody":
+                sendScaleSeverityMessage()
                 break;       
     }
 
-    async function symptomMail(){
+    async function sendSymptomListMessage(){
         symptomList = phone.symptoms;
         let symptString = "Please indicate your symptom ";
         for(let i=0;i<symptomList.length;i++)
@@ -113,11 +71,63 @@ router.post('/register' , async (req,res) => {
             from : process.env.TWILIO_PHONE_NO,
             body : symptString})
         await phoneModel.findOneAndUpdate({phoneNo : from},
-            {
+        {
                 $set:{
-                    status : "AwaitingSymptom"
+                    status : "NowSymptomInBody"
                 }
-            });
+        });
+    }
+
+    async function sendScaleSeverityMessage()
+    {
+        if(msgBody ==0){
+            await client.messages.create({
+                to : from,
+                from : process.env.TWILIO_PHONE_NO,
+                body : "You do not have a " + phone.currentSymptom});
+            sendSymptomListMessage();
+            
+        }
+        if(msgBody >=1 && msgBody <=2){
+            await client.messages.create({
+                to : from,
+                from : process.env.TWILIO_PHONE_NO,
+                body : "You have a mild " + phone.currentSymptom});
+            sendSymptomListMessage();
+        }
+        if(msgBody == 3){
+            await client.messages.create({
+                to : from,
+                from : process.env.TWILIO_PHONE_NO,
+                body : "You have a moderate " + phone.currentSymptom});
+            sendSymptomListMessage();
+        }
+        if(msgBody == 4){
+            
+            await client.messages.create({
+                to : from,
+                from : process.env.TWILIO_PHONE_NO,
+                body : "You have a severe " + phone.currentSymptom});
+            sendSymptomListMessage();
+        }
+    }
+
+    async function sendScaleMessage(){
+        symptomList = phone.symptoms;
+            let symp = symptomList[msgBody-1];
+            await client.messages.create({
+                        to : from,
+                        from : process.env.TWILIO_PHONE_NO,
+                        body : "On a scale from 0 (none) to 4 (severe), how would you rate your " + symp + " in the last 24 hours?"});
+                var newArray = symptomList.filter(e => e !== symp);
+            await phoneModel.findOneAndUpdate({phoneNo : from},
+                   {
+                        $set:{
+                            status : "NowScaleInBody",
+                            currentSymptom : symp,
+                            symptoms : newArray
+                    }
+        });
     }
          
 });
