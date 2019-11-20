@@ -5,8 +5,6 @@ const authToken = process.env.TWILIO_AUHT_TOKEN;
 const client = require('twilio')(accountSID,authToken);
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
-
-let symptomList = ['Headache',]
 router.post('/register' , async (req,res) => {
 
     console.log("IN RESGISTER");
