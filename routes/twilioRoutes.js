@@ -3,11 +3,8 @@ const accountSID = process.env.TWILIO_ACCOUNT_SID;
 const phoneModel = require('../model/phone');
 const authToken = process.env.TWILIO_AUHT_TOKEN;
 const client = require('twilio')(accountSID, authToken);
-const MessagingResponse = require('twilio').twiml.MessagingResponse;
 let symptomList = []
 router.post('/register', async (req, res) => {
-
-    console.log("IN RESGISTER");
     let from = req.body.From;
     let msgBody = req.body.Body;
     let phone = await phoneModel.findOne({ phoneNo: from });
@@ -17,7 +14,6 @@ router.post('/register', async (req, res) => {
             phoneNo: from,
             status: "Registered",
             symptoms: symptomList
-
         })
         await client.messages.create({
             to: from,
@@ -52,20 +48,21 @@ router.post('/register', async (req, res) => {
 
     async function sendSymptomListMessage() {
         symptomList = phone.symptoms;
-        if(symptomList.length<=2)
-        {
+        if (symptomList.length <= 2) {
             await client.messages.create({
                 to: from,
                 from: process.env.TWILIO_PHONE_NO,
-                body: "Thank you and see you soon" 
+                body: "Thank you and see you soon"
             });
             await phoneModel.findOneAndUpdate({ phoneNo: from },
                 {
                     $set: {
                         status: null
                     }
-            });
+                });
+            res.end();
             return;
+            
 
         }
         let symptString = "Please indicate your symptom ";
@@ -113,7 +110,6 @@ router.post('/register', async (req, res) => {
             sendSymptomListMessage();
         }
         else if (msgBody == 4) {
-
             await client.messages.create({
                 to: from,
                 from: process.env.TWILIO_PHONE_NO,
@@ -125,7 +121,7 @@ router.post('/register', async (req, res) => {
             await client.messages.create({
                 to: from,
                 from: process.env.TWILIO_PHONE_NO,
-                body: "Please enter a number from 0 to 4" 
+                body: "Please enter a number from 0 to 4"
             });
 
         }
@@ -145,6 +141,7 @@ router.post('/register', async (req, res) => {
                         status: null
                     }
                 });
+            
         }
         else if (msgBody > 0 && msgBody <= symptomList.length) {
             let symp = symptomList[msgBody - 1];
@@ -170,8 +167,8 @@ router.post('/register', async (req, res) => {
                 body: "Please enter a number from 0 to " + symptomList.length
             });
         }
-
     }
+    res.end();
 
 });
 
