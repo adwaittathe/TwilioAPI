@@ -34,19 +34,22 @@ router.post('/register', async (req, res) => {
             });
         sendSymptomListMessage();
     }
-    switch (phone.status) {
-        // case "Registered":
-        //     sendSymptomListMessage();
-        //     break;
+    if (phone) {
+        switch (phone.status) {
+            // case "Registered":
+            //     sendSymptomListMessage();
+            //     break;
 
-        case "NowSymptomInBody":
-            sendScaleMessage()
-            break;
+            case "NowSymptomInBody":
+                sendScaleMessage()
+                break;
 
-        case "NowScaleInBody":
-            sendScaleSeverityMessage()
-            break;
+            case "NowScaleInBody":
+                sendScaleSeverityMessage()
+                break;
+        }
     }
+
 
     async function sendSymptomListMessage() {
         symptomList = phone.symptoms;
@@ -141,7 +144,7 @@ router.post('/register', async (req, res) => {
                         status: null
                     }
                 });
-            
+
         }
         else if (msgBody > 0 && msgBody <= symptomList.length) {
             let symp = symptomList[msgBody - 1];
