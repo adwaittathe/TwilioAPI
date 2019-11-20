@@ -4,7 +4,7 @@ const phoneModel = require('../model/phone');
 const authToken = process.env.TWILIO_AUHT_TOKEN;
 const client = require('twilio')(accountSID,authToken);
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
-
+let symptomList=[]
 router.post('/register' , async (req,res) => {
 
     console.log("IN RESGISTER");
@@ -16,7 +16,7 @@ router.post('/register' , async (req,res) => {
     // console.log("BODY " + msgBody);
     let phone = await phoneModel.findOne({phoneNo : from });  
     if(!phone && msgBody=="START"){
-            let symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness']; 
+        symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness']; 
             let phoneObj = new phoneModel({
                 phoneNo : from,
                 status : "Registered",
@@ -33,7 +33,7 @@ router.post('/register' , async (req,res) => {
             console.log("3");
     }
     if(phone && msgBody=="START"){
-        let symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness']; 
+        symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness']; 
         await phoneModel.findOneAndUpdate({phoneNo : from},
             {
                 $set:{
@@ -46,7 +46,7 @@ router.post('/register' , async (req,res) => {
     switch(phone.status)
     {
             case "Registered":
-                    let symptomList = phone.symptoms;
+                symptomList = phone.symptoms;
                     let symptString = "Please indicate your symptom ";
                     for(let i=0;i<symptomList.length;i++)
                     {
@@ -69,7 +69,7 @@ router.post('/register' , async (req,res) => {
                     
             
             case "AwaitingSymptom":
-                let symptomList = phone.symptoms;
+                symptomList = phone.symptoms;
                 let symp = symptomList[msgBody-1];
                 await client.messages.create({
                         to : from,
