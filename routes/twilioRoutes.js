@@ -62,12 +62,18 @@ router.post('/register', async (req, res) => {
                 from: process.env.TWILIO_PHONE_NO,
                 body: "Thank you and see you soon"
             });
+
+            symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness'];
+
             await phoneModel.findOneAndUpdate({ phoneNo: from },
                 {
                     $set: {
+                        symptoms: symptomList,
                         status: null
                     }
                 });
+
+
             res.end();
             return;
         }
@@ -141,9 +147,11 @@ router.post('/register', async (req, res) => {
                 from: process.env.TWILIO_PHONE_NO,
                 body: "Thank you and we will check with you later."
             });
+            symptomList = ['Headache', 'Dizziness', 'Nausea', 'Fatigue', 'Sadness'];
             await phoneModel.findOneAndUpdate({ phoneNo: from },
                 {
                     $set: {
+                        symptoms: symptomList,
                         status: null
                     }
                 });
