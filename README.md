@@ -17,10 +17,14 @@ After enrolling in the study the user gets the following message: "Please indica
 The user is only allowed to enter a number 0-5. If the user sends a message, not in this range it sends the user a message: "Please enter a number from 0 to 5"
 If the user enters 0, then send them this message "Thank you and we will check with you later." and stops messaging for this user.
 
-Step 2: After answering the symptom selection message the user will be asked to rank their symptom "On a scale from 0 (none) to 4 (severe), how would you rate your "XXXX" in the last 24 hours?", where "XXXX" is the symptom they selected in the first message.
+Step 2: 
+---
+After answering the symptom selection message the user will be asked to rank their symptom "On a scale from 0 (none) to 4 (severe), how would you rate your "XXXX" in the last 24 hours?", where "XXXX" is the symptom they selected in the first message.
 The user is only allowed to enter a number 0-4. If the user sends a message, not in this range you it sends the user a message: "Please enter a number from 0 to 4"
 
-Step 3: After answering the rating question the user gets a follow-up message based on the rating level they selected:
+Step 3: 
+---
+After answering the rating question the user gets a follow-up message based on the rating level they selected:
 if 1 or 2: then it sends "You have a mild XXXX" where XXXX is the symptom.
 if 3: then it sends "You have a moderate XXXX" where XXXX is the symptom.
 if 4: then send "You have a severe XXXX" where XXXX is the symptom.
