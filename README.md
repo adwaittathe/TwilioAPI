@@ -10,7 +10,9 @@ An express.js application that allows sending of SMS messages to the user and to
 The user is able to enroll in the app by texting START to his/her study text number.
 The app provides the required validation to ensure the user is not re-enrolled if already enrolled in the app. Upon enrolling in the app for the first time, the user gets the message "Welcome to the study".
 
-Step 1: After enrolling in the study the user gets the following message: "Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None"
+Step 1: 
+---
+After enrolling in the study the user gets the following message: "Please indicate your symptom (1)Headache, (2)Dizziness, (3)Nausea, (4)Fatigue, (5)Sadness, (0)None"
 
 The user is only allowed to enter a number 0-5. If the user sends a message, not in this range it sends the user a message: "Please enter a number from 0 to 5"
 If the user enters 0, then send them this message "Thank you and we will check with you later." and stops messaging for this user.
