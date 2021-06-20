@@ -1,4 +1,4 @@
-# Twilio API
+# Twilio SMS API
 
 An express.js application that allows sending of SMS messages to the user and to create a conversation with the user. The app is based on the Twilio API (https://www.twilio.com).
 
